@@ -2,7 +2,7 @@
  * 
  * Class to represent a player agent for the FenceMaster board game session.
  * 
- * @author Rahmadhy Karina (585592) and Bradley Jackson ()
+ * @author Rahmadhy Karina (585592) and Bradley Jackson (587163)
  * 
  */
 
