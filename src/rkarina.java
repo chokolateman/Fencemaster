@@ -5,7 +5,9 @@
  * @author Rahmadhy Karina (585592) and Bradley Jackson ()
  * 
  */
-//import aiproject.fencemaster.player  
+
+/*aiproj - the provided referee file*/
+import aiproj.fencemaster.* ;
 import java.util.NoSuchElementException;
 import java.util.*;
 
@@ -13,8 +15,10 @@ import java.util.*;
 public class rkarina {//implements Player, Piece {
 	// Fields and initialized variables 
 	int inp_num, p_piece;
-	
 	Board board = new Board(inp_num);
+
+	//used for adding cells into arraylist
+	int index = 0;
 	//String ;
 	
 	// Constructor 
@@ -55,7 +59,7 @@ public class rkarina {//implements Player, Piece {
 				// Loop through each column of board configuration 
 				for(j=0; j < n + k; j++){
 					Cell current = new Cell(i, j, "-");
-						board.addCell(current);
+						board.addCell(index, current);
 				
 				} 
 			}
