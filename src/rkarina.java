@@ -5,21 +5,20 @@
  * @author Rahmadhy Karina (585592) and Bradley Jackson (587163)
  * 
  */
+import aiproj.fencemaster.*;  
 
-/*aiproj - the provided referee file*/
-import aiproj.fencemaster.* ;
-import java.util.NoSuchElementException;
+import java.io.PrintStream;
 import java.util.*;
 
 
-public class rkarina {//implements Player, Piece {
+public class rkarina implements Player, Piece {
 	// Fields and initialized variables 
 	int inp_num, p_piece;
 	Board board = new Board(inp_num);
-
-	//used for adding cells into arraylist
-	int index = 0;
-	//String ;
+	NewGraph graph = new NewGraph();
+	
+	// Flag to check if the first move 
+	Boolean isSwapped=false;
 	
 	// Constructor 
 	rkarina() {	
@@ -39,18 +38,19 @@ public class rkarina {//implements Player, Piece {
 	 */
 	public int init(int n, int p){
 		// Init variables and values 
-		int i, j, k=0;
+		int i, j, k = 0;
+		int boardCount = 0;
 		Cell cell = new Cell();
 		
 		// Validate the board configuration dimensions before populating  
-		// checking correct values for n and p
-		if (n < 5){ //|| (p!=("Int for W" || "Int for B"))){
+		// checking correct values for p
+		if (((p != 1) && (p!=2))){
 			return -1;
 		}
 		
 		// Assign this to the global variables for player 
-		this.inp_num = n;
-		this.p_piece=p;
+		//this.inp_num = n;
+		//p_piece = p;
 		
 		// Make the an empty board configuration
 		try {
@@ -59,12 +59,11 @@ public class rkarina {//implements Player, Piece {
 				// Loop through each column of board configuration 
 				for(j=0; j < n + k; j++){
 					Cell current = new Cell(i, j, "-");
-						board.addCell(index, current);
-				
+						board.addCell(boardCount,current);
 				} 
-			}
 				// Manage hex positioning 
-			if (i < n-1){k++;} else {k--;}
+				if (i < n-1){k++;} else {k--;}
+			}
 		}
 		catch (NoSuchElementException e){
 			System.err.println("Input lacks correct dimensions.");
@@ -84,31 +83,29 @@ public class rkarina {//implements Player, Piece {
 	}
 	
 	/**
-	 * 
 	 * Evaluation function to assign weights to possible moves from the current
 	 * board configurations. 
-	 * 
 	 */
 	public void evaluationWeights(){
 		
 	}
 	
 	/**
-	 * 
 	 * Selects a desired move against another player agent in thr board game. 
 	 * Based on a MiniMax Adversarial Search Algorithm, the function 
 	 * selects a move, based on the MAX value of the current board configuration.
 	 * 
 	 * @return A move class object derived from the Player interface. 
-	 * 
 	 */
-	//public Move makeMove(){
+	public Move makeMove(){
 		// Variables and initialization of values  
 		// Method/function name of algorithm
 		// Block of Code 
 		// Block of Code
 		//
-	//}
+		Move move = new Move() ;
+		return move;
+	}
 	
 	/**
 	 * This method is called by the referee to inform your player 
@@ -122,14 +119,14 @@ public class rkarina {//implements Player, Piece {
 	 * @param m | A move class object from Player interface of the opponent. 
 	 * 
 	 * @return An integer value. Returns 0 if opponent move is legal, otherwise
-	 * returns -1 if opponent move is illegal. 
-	 *  
+	 * returns -1 if opponent move is illegal.
 	 */
-	//public int opponentMove(Move m){
+	public int opponentMove(Move m){
 		// Variables and init of values
 		// Function to check to see if the move is illegal, otherwise return 0
 		// If it is illegal, return -1
-	//}
+		return 0;
+	}
 	     
 	/**
 	 * This method should check the board configuration for a 
@@ -138,23 +135,26 @@ public class rkarina {//implements Player, Piece {
 	 * 1=WHITE, 2=BLACK). Note that EMPTY corresponds to a draw 
 	 * and INVALID corresponds to a non-terminal state of the game.
 	 * 
-	 * @return int Value 
+	 * @return int Value that represents the current board state, either 
+	 * a non-terminal or terminal state is presented in the board game state.  
 	 */
-	//public int getWinner(){
-		
-	//}
+	public int getWinner(){
+		//board.checkTripod(Newgraph g);
+		return 0;
+	}
 	
 	     
 	/**
 	* 
 	* @param output
 	*/
-	//public void printBoard(PrintStream output){
-		//int i=0;
-		//while(i<board.boardCells.size()){
-			
-		//}
-	//}
+	public void printBoard(PrintStream output){
+		int i=0;
+		while(i<board.boardCells.size()){
+			output.println("-s");
+
+		}
+	}
 
 	
 	
