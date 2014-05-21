@@ -49,8 +49,8 @@ public class rkarina implements Player, Piece {
 		}
 		
 		// Assign this to the global variables for player 
-		//this.inp_num = n;
-		//p_piece = p;
+		this.inp_num = n;
+		this.p_piece = p;
 		
 		// Make the an empty board configuration
 		try {
@@ -64,6 +64,8 @@ public class rkarina implements Player, Piece {
 				// Manage hex positioning 
 				if (i < n-1){k++;} else {k--;}
 			}
+
+			this.board = board;
 		}
 		catch (NoSuchElementException e){
 			System.err.println("Input lacks correct dimensions.");
@@ -125,7 +127,36 @@ public class rkarina implements Player, Piece {
 		// Variables and init of values
 		// Function to check to see if the move is illegal, otherwise return 0
 		// If it is illegal, return -1
-		return 0;
+		int i;
+
+		/*First check if move is within bounds of board*/
+		if(m.Row < 0 || m.Row >= (2*(this.inp_num)-1)){
+			return -1;
+		}
+		if(m.Col < 0 || m.Col < (this.inp_num + m.Row)){
+			return -1;
+		}
+
+		/*Check if piece isn't overlapping another piece on board*/
+		for(i = 0; i < rkarina.board.boardCount; i++){
+			if((rkarina.board.boardCells.get(i).x == m.Row) && 
+				(rkarina.board.boardCells.get(i).y == m.Col)){
+				/*Detected overlap, check if overlapping own colour*/
+				if(rkarina.board.boardCells.get(i).type == m.P){
+					return -1;
+				}
+				/*Detected a match, now need to see if IsSwap was invoked*/
+				else{
+					
+					
+				}
+
+
+			}
+		}
+
+
+
 	}
 	     
 	/**
