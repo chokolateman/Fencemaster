@@ -128,7 +128,10 @@ public class rkarina implements Player, Piece {
 		// Function to check to see if the move is illegal, otherwise return 0
 		// If it is illegal, return -1
 		int i;
+		boolean possibleSwap = false;
 
+		
+		
 		/*First check if move is within bounds of board*/
 		if(m.Row < 0 || m.Row >= (2*(this.inp_num)-1)){
 			return -1;
