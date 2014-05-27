@@ -4,7 +4,7 @@ import java.util.LinkedList;
 /**
  * NewGraph Class
  * A collection of root cells signifying where adjacent nodes exist.
- * Size indicates the number of root nodes of either color on the board. 
+ * Size indicates the number of root nodes of either color on the board
  * @author Rahmadhy Karina and Bradley Jackson
  *
  */
