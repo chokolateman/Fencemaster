@@ -142,6 +142,8 @@ public class rkarina implements Player, Piece {
 		int tempColourInt; 
 		String tempColourStr;
 		boolean possibleSwap = false;
+		
+		
 
 		/*First check if move is within bounds of board rows*/
 		if(m.Row < 0 || m.Row > (2*(this.dim_num) - 2)){ //max size is 2N-2
@@ -156,16 +158,14 @@ public class rkarina implements Player, Piece {
 		bottom half is between N + 1 - row number and 2N-2
 		*/
 
-		if(m.Col < this.dim_num){
-			if(m.Col < 0 || m.Col >= (this.dim_num + m.Row)){
-				return -1;
-			}
+
+		if(m.Col < 0 || m.Col >= (this.dim_num + m.Row)){
+			return -1;
 		}
-		else{
-			if(m.Col < ((m.Row)-((this.dim_num)-1)) || m.Col > (2*(this.dim_num) - 2)){
-				return -1;
-			}
+		if(m.Col < ((m.Row)-((this.dim_num)-1)) || m.Col > (2*(this.dim_num) - 2)){
+			return -1;
 		}
+
 
 		/*Check if a Swap is used. Iterate over and make sure that the opponent
 		has only used ONE move*/
@@ -191,10 +191,12 @@ public class rkarina implements Player, Piece {
 				(board.boardCells.get(i).col == m.Col)){
 
 				swapIndex = i;
-
-				/*Detected overlap, check if overlapping their own colour*/
+				
+				/*Detected overlap, check if they are overlapping your cell*/
 				tempColourInt = colourStringToInt(board.boardCells.get(i).type);
-				if(tempColourInt == m.P){
+				
+				//System.out.println("board type: " + tempColourInt + " move type: " + m.P);
+				if(tempColourInt != m.P && tempColourInt != 0){
 					return -1;
 				}
 				/*Detected a match, now need to see if IsSwap was invoked*/
@@ -207,9 +209,9 @@ public class rkarina implements Player, Piece {
 						
 						tempColourStr = colourIntToString(m.P);
 						board.boardCells.get(i).type = tempColourStr;
-
 						return 0;
 					}
+
 
 				}
 
