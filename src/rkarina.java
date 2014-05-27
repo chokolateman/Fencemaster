@@ -23,7 +23,7 @@ public class rkarina implements Player, Piece {
 	// Flag to check if the first move 
 	Boolean isSwapped = false;
 	// Constructor 
-	rkarina() {	
+	public rkarina() {	
 	}
 	
 	/**
