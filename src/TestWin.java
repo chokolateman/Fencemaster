@@ -4,12 +4,9 @@
  *
  *	Date modified:  
  */
-import java.io.PrintStream;
 import java.util.Scanner;
-import java.util.NoSuchElementException;
-import java.lang.*;
 
-import aiproj.fencemaster.*; 
+import aiproj.fencemaster.Move;
 
 public class TestWin {
 	public static void main(String args[]){  

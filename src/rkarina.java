@@ -44,19 +44,18 @@ public class rkarina implements Player, Piece {
 		int boardCount = 0;
 		Move nothing = new Move();
 		
-		// Assign this to the global variables for piece colore and board dimension 
+		// Assign this to the global variables for piece colour and board dimension 
 		dim_num = n;
 		p_piece = p;
 		
-<<<<<<< HEAD
+
 		// Assign characters for each player type for printing purposes 
 		if(p_piece == 1){ p_type = "W"; opp_type = "B"; }
 		if(p_piece == 2){ p_type = "B"; opp_type = "W"; }
-=======
+
 		// Assign this to the global variables for player 
-		this.inp_num = n;
+		this.dim_num = n;
 		this.p_piece = p;
->>>>>>> 11b06757b8cb0cb5f781fbc4c082e5f605a8d507
 		
 		// Make the an empty board configuration
 		try {
@@ -132,51 +131,146 @@ public class rkarina implements Player, Piece {
 	 * @return An integer value. Returns 0 if opponent move is legal, otherwise
 	 * returns -1 if opponent move is illegal.
 	 */
+
 	public int opponentMove(Move m){
 		// Variables and init of values
 		// Function to check to see if the move is illegal, otherwise return 0
-<<<<<<< HEAD
-		if (m.IsSwap == true && move_num != 1)
-			return -1;
-		updateBoard(board, m);
-		move_num++;
-		return 0;
-=======
 		// If it is illegal, return -1
 		int i;
+		int colourCount = 0;
+		int swapIndex;
+		int tempColourInt; 
+		String tempColourStr;
 		boolean possibleSwap = false;
 
-		
-		
-		/*First check if move is within bounds of board*/
-		if(m.Row < 0 || m.Row >= (2*(this.inp_num)-1)){
+		/*First check if move is within bounds of board rows*/
+		if(m.Row < 0 || m.Row > (2*(this.dim_num) - 2)){ //max size is 2N-2
 			return -1;
 		}
-		if(m.Col < 0 || m.Col < (this.inp_num + m.Row)){
+
+		/*Check if move is within bounds of board columns. 
+		The top half of the board and bottom half each follow
+		different constraints
+
+		e.g. top half is between 0 and N + row number
+		bottom half is between N + 1 - row number and 2N-2
+		*/
+
+		if(m.Col < this.dim_num){
+			if(m.Col < 0 || m.Col >= (this.dim_num + m.Row)){
+				return -1;
+			}
+		}
+		else{
+			if(m.Col < ((m.Row)-((this.dim_num)-1)) || m.Col > (2*(this.dim_num) - 2)){
+				return -1;
+			}
+		}
+
+		/*Check if a Swap is used. Iterate over and make sure that the opponent
+		has only used ONE move*/
+		for(i = 0; i < board.boardCount; i++){
+			tempColourInt = colourStringToInt(board.boardCells.get(i).type);
+			if(tempColourInt == m.P){
+				colourCount ++;
+			}
+		}
+		if(colourCount == 1){
+			possibleSwap = true;
+		}
+
+		
+		/*Check if opponent is using this player's colour i.e. the wrong colour*/
+		if(m.P == this.p_piece){
 			return -1;
 		}
 
 		/*Check if piece isn't overlapping another piece on board*/
-		for(i = 0; i < rkarina.board.boardCount; i++){
-			if((rkarina.board.boardCells.get(i).x == m.Row) && 
-				(rkarina.board.boardCells.get(i).y == m.Col)){
-				/*Detected overlap, check if overlapping own colour*/
-				if(rkarina.board.boardCells.get(i).type == m.P){
+		for(i = 0; i < board.boardCount; i++){
+			if((board.boardCells.get(i).row == m.Row) && 
+				(board.boardCells.get(i).col == m.Col)){
+
+				swapIndex = i;
+
+				/*Detected overlap, check if overlapping their own colour*/
+				tempColourInt = colourStringToInt(board.boardCells.get(i).type);
+				if(tempColourInt == m.P){
 					return -1;
 				}
 				/*Detected a match, now need to see if IsSwap was invoked*/
 				else{
-					
-					
+					/*Check if the swap was used, if true, update location colour
+					and end*/
+					if(possibleSwap == true && m.IsSwap == true){
+						board.boardCells.get(i).row = m.Row;
+						board.boardCells.get(i).col = m.Col;
+						
+						tempColourStr = colourIntToString(m.P);
+						board.boardCells.get(i).type = tempColourStr;
+
+						return 0;
+					}
+
 				}
 
 
 			}
 		}
-
-
-
->>>>>>> 11b06757b8cb0cb5f781fbc4c082e5f605a8d507
+		/*Move has passed checks, update opponent location*/
+		board.boardCells.get(i).row = m.Row;
+		board.boardCells.get(i).col = m.Col;
+		
+		tempColourStr = colourIntToString(m.P);
+		board.boardCells.get(i).type = tempColourStr;
+		return 0;
+	}
+	
+	public int colourStringToInt(String type){
+		/*converts colour defined strings (b,w,-) from the cell class
+		 * and converts them into colour defined ints from the piece class
+		White = 1, Black = 2, Empty = 0, Invalid = -1
+		 */
+		int colour;
+		type = type.toUpperCase();
+		
+		if((type).equals("B")){
+			colour = 2;
+		}
+		else if((type).equals("W")){
+			colour = 1;
+		}
+		else if((type).equals("-")){
+			colour = 0;
+		}
+		else{
+			colour = -1;
+		}
+		
+		
+		return colour;
+	}
+	
+	public String colourIntToString(int type){
+		/*converts colour defined ints from the piece class 	 
+		* and converts them into colour defined strings (B,W,-) from the cell class
+		White = 1, Black = 2, Empty = 0, Invalid = -1
+		 */
+		String colour;
+		if(type == 1){
+			colour = "W";
+		}
+		else if(type == 2){
+			colour = "B";
+		}
+		else if(type == 0){
+			colour = "-";
+		}
+		else{
+			colour = "-";
+		}
+		
+		
+		return colour;
 	}
 	     
 	/**
