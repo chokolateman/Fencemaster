@@ -217,11 +217,17 @@ public class rkarina implements Player, Piece {
 			}
 		}
 		/*Move has passed checks, update opponent location*/
+		/*construct new cell, and add to board*/
+		tempColourStr = colourIntToString(m.P);
+		Cell opponentCell = new Cell(m.Row, m.Col, tempColourStr);
+		board.boardCells.add(opponentCell);
+		
+		/*
 		board.boardCells.get(i).row = m.Row;
 		board.boardCells.get(i).col = m.Col;
-		
-		tempColourStr = colourIntToString(m.P);
 		board.boardCells.get(i).type = tempColourStr;
+		*/
+		
 		return 0;
 	}
 	
