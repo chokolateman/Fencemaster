@@ -48,9 +48,15 @@ public class rkarina implements Player, Piece {
 		dim_num = n;
 		p_piece = p;
 		
+<<<<<<< HEAD
 		// Assign characters for each player type for printing purposes 
 		if(p_piece == 1){ p_type = "W"; opp_type = "B"; }
 		if(p_piece == 2){ p_type = "B"; opp_type = "W"; }
+=======
+		// Assign this to the global variables for player 
+		this.inp_num = n;
+		this.p_piece = p;
+>>>>>>> 11b06757b8cb0cb5f781fbc4c082e5f605a8d507
 		
 		// Make the an empty board configuration
 		try {
@@ -66,6 +72,8 @@ public class rkarina implements Player, Piece {
 				// Manage hex positioning 
 				if (i < n-1){ k++; } else { k--; o++; }
 			}
+
+			this.board = board;
 		}
 		catch (NoSuchElementException e){
 			System.err.println("Input lacks correct dimensions.");
@@ -127,11 +135,48 @@ public class rkarina implements Player, Piece {
 	public int opponentMove(Move m){
 		// Variables and init of values
 		// Function to check to see if the move is illegal, otherwise return 0
+<<<<<<< HEAD
 		if (m.IsSwap == true && move_num != 1)
 			return -1;
 		updateBoard(board, m);
 		move_num++;
 		return 0;
+=======
+		// If it is illegal, return -1
+		int i;
+		boolean possibleSwap = false;
+
+		
+		
+		/*First check if move is within bounds of board*/
+		if(m.Row < 0 || m.Row >= (2*(this.inp_num)-1)){
+			return -1;
+		}
+		if(m.Col < 0 || m.Col < (this.inp_num + m.Row)){
+			return -1;
+		}
+
+		/*Check if piece isn't overlapping another piece on board*/
+		for(i = 0; i < rkarina.board.boardCount; i++){
+			if((rkarina.board.boardCells.get(i).x == m.Row) && 
+				(rkarina.board.boardCells.get(i).y == m.Col)){
+				/*Detected overlap, check if overlapping own colour*/
+				if(rkarina.board.boardCells.get(i).type == m.P){
+					return -1;
+				}
+				/*Detected a match, now need to see if IsSwap was invoked*/
+				else{
+					
+					
+				}
+
+
+			}
+		}
+
+
+
+>>>>>>> 11b06757b8cb0cb5f781fbc4c082e5f605a8d507
 	}
 	     
 	/**
