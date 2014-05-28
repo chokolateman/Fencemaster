@@ -27,12 +27,15 @@ public class TestWin {
         Board board = new Board(n);
         Board b = new Board();
         board.generateEdgeNodes(n);
-        
+        // Check the edge nodes. 
+        for (String edge : board.edges){ System.out.println(edge); }
+       
         // Validation of integer input dimension
         if(n < 5){
     		System.out.print("Please enter dimensions greater than 5");
     		System.exit(0);
         }
+        
         int maxDim = 2*n-2;
         // Loop through each row of board configuration 
         for(i=0; i < (2*n-1); i++){
@@ -85,6 +88,7 @@ public class TestWin {
 	        		} else { tempMove.IsSwap = false; }
 	        	}
 	        	tempMove.P = 2;
+	        	if (board.edges.contains(x+","+y)) { System.out.println("The node is an edge node."); } else { System.out.println("The cell is not an edge cell."); }
 	        	if (player.opponentMove(tempMove)==0) { 
 	        		break;
 	        	} else { System.out.println("Invalid move, please input another move."); }
@@ -135,27 +139,14 @@ public class TestWin {
 
 	private static void printBoard(Board board, int n) {
 		// Reset value for printing
-     	int count=0;
-     	int d = 0;
-     	int k=0;
+    
      	// For printing and testing purposes 
      	for(int i=0; i < (2*n-1); i++){
 			// Loop through each column of board configuration 
 			for(int j=0; j < n + k; j++){
-				while(d<(n-k)){
-					System.out.print(" ");
-					d++;
-				}
-				System.out.print(board.boardCells.get(count).type + " ");
-				count++;
+				
+				
 			}
-			d=0;
-			while(d<(n-k)){
-				System.out.print(" ");
-				d++;
-			}
-			System.out.println();
-			d=0;
 			// Manage hex positioning 
 			if (i < n-1){k++;} else {k--;}
 		}

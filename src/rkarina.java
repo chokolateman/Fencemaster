@@ -13,7 +13,7 @@ import java.util.*;
 
 public class rkarina implements Player, Piece {
 	// Fields and initialized variables 
-	int dim_num, p_piece, move_num = 0;
+	int dim_num, p_piece, opp_piece, move_num = 0;
 	String p_type, opp_type;
 	
 	Board board = new Board();
@@ -22,8 +22,9 @@ public class rkarina implements Player, Piece {
 	
 	// Flag to check if the first move 
 	Boolean isSwapped = false;
+	
 	// Constructor 
-	rkarina() {	
+	public rkarina() {	
 	}
 	
 	/**
@@ -48,15 +49,9 @@ public class rkarina implements Player, Piece {
 		dim_num = n;
 		p_piece = p;
 		
-<<<<<<< HEAD
-		// Assign characters for each player type for printing purposes 
-		if(p_piece == 1){ p_type = "W"; opp_type = "B"; }
-		if(p_piece == 2){ p_type = "B"; opp_type = "W"; }
-=======
-		// Assign this to the global variables for player 
-		this.inp_num = n;
-		this.p_piece = p;
->>>>>>> 11b06757b8cb0cb5f781fbc4c082e5f605a8d507
+		// Assign characters and piece for pplayer and  type for printing purposes 
+		if(p_piece == 1){ opp_piece = 2; p_type = "W"; opp_type = "B"; }
+		if(p_piece == 2){ opp_piece = 1; p_type = "B"; opp_type = "W"; }
 		
 		// Make the an empty board configuration
 		try {
@@ -72,8 +67,6 @@ public class rkarina implements Player, Piece {
 				// Manage hex positioning 
 				if (i < n-1){ k++; } else { k--; o++; }
 			}
-
-			this.board = board;
 		}
 		catch (NoSuchElementException e){
 			System.err.println("Input lacks correct dimensions.");
@@ -106,12 +99,16 @@ public class rkarina implements Player, Piece {
 		// Random integer generator
 		randInt = 0 + (int)(Math.random() * (uncheckedCells.size()));
 		Cell randCell = uncheckedCells.get(randInt);
+		
+		// Initialize the move 
 		move.Row = randCell.row;
 		move.Col = randCell.col;
 		move.P = p_piece;
 		randCell.type = p_type;
+		
 		//Removes the random cell input from the Array List
 		uncheckedCells.remove(randCell);
+		
 		// Update player board state 
 		updateBoard(board, move);
 		move_num++;
@@ -134,49 +131,21 @@ public class rkarina implements Player, Piece {
 	 */
 	public int opponentMove(Move m){
 		// Variables and init of values
-		// Function to check to see if the move is illegal, otherwise return 0
-<<<<<<< HEAD
-		if (m.IsSwap == true && move_num != 1)
-			return -1;
+		// Check if the opponent is able to swap or not
+		if (opp_piece == 2 && move_num != 1 && m.IsSwap == true){ return -1; }
+		if (opp_piece == 1 && m.IsSwap == true ){ return -1; }
+		
+		// Update the uncheckCells array list
+    	for (Cell temp: uncheckedCells){
+    		if (temp.row == m.Row && temp.col == m.Col) {
+    			uncheckedCells.remove(temp);
+    			break;
+    		}
+    	}
+		
 		updateBoard(board, m);
 		move_num++;
 		return 0;
-=======
-		// If it is illegal, return -1
-		int i;
-		boolean possibleSwap = false;
-
-		
-		
-		/*First check if move is within bounds of board*/
-		if(m.Row < 0 || m.Row >= (2*(this.inp_num)-1)){
-			return -1;
-		}
-		if(m.Col < 0 || m.Col < (this.inp_num + m.Row)){
-			return -1;
-		}
-
-		/*Check if piece isn't overlapping another piece on board*/
-		for(i = 0; i < rkarina.board.boardCount; i++){
-			if((rkarina.board.boardCells.get(i).x == m.Row) && 
-				(rkarina.board.boardCells.get(i).y == m.Col)){
-				/*Detected overlap, check if overlapping own colour*/
-				if(rkarina.board.boardCells.get(i).type == m.P){
-					return -1;
-				}
-				/*Detected a match, now need to see if IsSwap was invoked*/
-				else{
-					
-					
-				}
-
-
-			}
-		}
-
-
-
->>>>>>> 11b06757b8cb0cb5f781fbc4c082e5f605a8d507
 	}
 	     
 	/**
@@ -190,7 +159,7 @@ public class rkarina implements Player, Piece {
 	 * a non-terminal or terminal state is presented in the board game state.  
 	 */
 	public int getWinner(){
-		// board.checkTripod(Newgraph g);
+		//board.checkTripod(Newgraph g);
 		if (this.uncheckedCells.size() > 0){
 			return -1;
 		}
@@ -212,18 +181,6 @@ public class rkarina implements Player, Piece {
 				break;
 			}
 			i++;
-		}
-	}
-	
-	/**
-	 * Checks the board for  
-	 * @param b A board configuration. 
-	 */
-	public void checkBoard(Board b){
-		int i=0;
-		while(i<b.boardCells.size()){
-			Cell temp = b.boardCells.get(i);
-			if(temp.type=="-"){ uncheckedCells.add(temp); } 
 		}
 	}
 	
@@ -271,11 +228,53 @@ public class rkarina implements Player, Piece {
 		return ""; 
 	}
 	
+	/** Recursive minimax at level of depth for either maximizing or minimizing player.
+     */
+	private void minimax(int depth, Seed player) {
+   
+	// Generate possible next moves in a List of int[2] of {row, col}.
+	ArrayList<Cell> nextMoves = uncheckedCells;
+
+   // mySeed is maximizing; while oppSeed is minimizing
+   int bestScore = (player == p_piece) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+   int currentScore;
+   int bestRow = -1;
+   int bestCol = -1;
+
+   if (nextMoves.isEmpty() || depth == 0) {
+      // Gameover or depth reached, evaluate score
+      bestScore = evaluate();
+   } else {
+      for (int[] move : nextMoves) {
+         // Try this move for the current "player"
+         cells[move[0]][move[1]].content = player;
+         if (player == mySeed) {  // mySeed (computer) is maximizing player
+            currentScore = minimax(depth - 1, oppSeed)[0];
+            if (currentScore > bestScore) {
+               bestScore = currentScore;
+               bestRow = move[0];
+               bestCol = move[1];
+            }
+         } else {  // oppSeed is minimizing player
+            currentScore = minimax(depth - 1, mySeed)[0];
+            if (currentScore < bestScore) {
+               bestScore = currentScore;
+               bestRow = move[0];
+               bestCol = move[1];
+            }
+         }
+         // Undo move
+         cells[move[0]][move[1]].content = Seed.EMPTY;
+      }
+   }
+   return new int[] {bestScore, bestRow, bestCol};
+}
+	
 	/**
 	 * Evaluation function to assign weights to possible moves from the current
 	 * board configurations. 
 	 */
-	public void evaluationWeights(){
+	public int evaluate(){
 		
 	}
 

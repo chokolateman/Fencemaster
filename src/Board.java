@@ -20,7 +20,7 @@ public class Board {
 	
 	
 	// Initialize edge nodes for tripod checking
-	public ArrayList<String> 
+	public ArrayList<String> edges = new ArrayList<String>(),
 	top = new ArrayList<String>(), bot = new ArrayList<String>(), 
 	top_r = new ArrayList<String>(), top_l = new ArrayList<String>(), 
 	bot_l = new ArrayList<String>(), bot_r = new ArrayList<String>();
@@ -169,14 +169,16 @@ public class Board {
 		for(i=1;i<n-1;i++){ 
 			String temp1 = "0,"+i;
 			String temp2 = i+",0";
+			edges.add(temp1);edges.add(temp2);			
 			top.add(temp1);
 			top_l.add(temp2);
 		}
 		
 		// Populate bottom left and top right range
 		for(i=1;i<n-1;i++){ 
-			String temp1 = i+","+j;
+			String temp1 = j+","+i;
 			String temp2 = i+","+j;
+			edges.add(temp1);edges.add(temp2);	
 			bot_l.add(temp1);
 			top_r.add(temp2);
 			j++;
@@ -188,6 +190,7 @@ public class Board {
 		for(i=n;i<j;i++){
 			String temp1 = i+","+j;
 			String temp2 = j+","+i;
+			edges.add(temp1);edges.add(temp2);	
 			bot_r.add(temp1);
 			bot.add(temp2);
 		}
