@@ -4,12 +4,9 @@
  *
  *	Date modified:  
  */
-import java.io.PrintStream;
 import java.util.Scanner;
-import java.util.NoSuchElementException;
-import java.lang.*;
 
-import aiproj.fencemaster.*; 
+import aiproj.fencemaster.Move;
 
 public class TestWin {
 	public static void main(String args[]){  
@@ -73,12 +70,27 @@ public class TestWin {
 	        	Move tempMove = new Move();
 	        	System.out.println("Make a move by typing a row: ");
 	        	x = inp.nextInt();
+	        	
+
 	        	if (x > maxDim || x < 0) { System.out.println("Invalid row input!"); }
+	        	
 	        	tempMove.Row = x;
 	        	System.out.println("Make a move by typing a column: ");
 	        	y = inp.nextInt();
-	        	if (y > maxDim || y < 0) { System.out.println("Invalid column input!"); }
-	        	tempMove.Col = y;
+	        	
+	        	/*Brad: Column check, two types depending on whether position is on top or bottom half of board 
+	        	 * i.e. if dimension is 5, you can't have a 0th column in the 8th row 
+	        	 */
+
+    			if(y < 0 || y >= (n + tempMove.Row)){
+    				System.out.println("Invalid column input!");
+    			}
+    			if(y < ((tempMove.Row)-((n)-1)) || y > maxDim){
+    				System.out.println("Invalid column input!");
+    			}
+	        	//if (y > maxDim || y < 0) { System.out.println("Invalid column input!"); } old col checking input
+	        	
+    			tempMove.Col = y;
 	        	
 	        	// Check if you've swapped with computer
 	        	for (Cell temp: player.board.boardCells){
