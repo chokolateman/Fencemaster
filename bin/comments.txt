@@ -1,195 +1,35 @@
- Artificial Intelligence - Project Part A
- Rahmadhy Karina (585592) & Bradley Jackson (587163)
- 
-================== 
- TestWin.Java
- 
-TestWin - The main class to handle standard input and validate board for
-terminal states. 
-	Processing for board construction, root validation and neighbour lists get undertaken
-	Inserts all coloured cells into Board, 
-	The variable boardWidthIncreaser accounts for the irregular hexagon shape
-	The following section is where the Cells and Graphs are created
-	 * referencing the initial board, the following loop process each cell and constructs a neighbourlist for them, 
-	 * proceeding to store them in a new board.     
- 
-==================
- Cell.Java
- 
- Class to represent each unique board slots/cells and its respective methods
- Designed to be a variant of a node, with more specific details relating to gameplay
- Each cell also contains a (shallow) list that references neighbouring cells, these cells can be later retrieved 
- from the Board class.
- 
+COMP30024 - Artificial Intelligence 
 
+Project | PartB
 
-A Class cell holds the following detail:
-	* x & y co-ordinates with reference to the hexagonal grid of the dimensions specified by user
-	* colour - representing either white, black, or null;
-	* visited - intended to be utilized for a half-finished depth first search algorithm.
-	* neighbourList holds a shallow list of neighbouring cells of neighbourCount quantity. It however cannot be traversed.
-	* isRoot is another intended element, to specify which Cells on the board are the root node. Currently incomplete due to root validation issues. 
+Group Members: Rahmadhy Karina (585592) & Bradley Jackson (587163)
 
-cellCopy - Copies all elements of the cell, besides neighbourList, which gets built up manually. And isRoot which must be specified.
-	 
-printNeighbours - Debug method which prints all neighbours of specified cell. Currently accurate in representation. 
-
-cellData - Another Debug method used to output x,y coordinates and colour details of a cell.
-
-getX, getY and getColour return their respective values of their respective types
-
-checked - Changes cell to 'visited', intended to be used with Depth First Search
+===============================================================================
+public int init(int n, int p)
+The init method is handled by a single nested iteration loop where we utilize 
+two boards, one for the current board configuration and one for possible moves
+where the slots are empty (without a player piece attached). 
+===============================================================================
+public Move makeMove()
+The makeMove method is handled through multiple stages the  
 
  
-==================
- NewGraph.java
+===============================================================================
+public int opponentMove(Move m)
  
-A collection of root cells signifying where adjacent nodes exist
-size indicates the number of root nodes of either colour on the board.
-Not a proper graph in terms of definition. Was not utilized in final release of Part A
-Contains
-	rootList - A cell representing the head of a configuration of cells
-	size - the number of cells in this configuration
-
-==================
-Board.java
-
-a Board is a collection of Cell classes, which holds all Cells belonging to a colour in an array.
-it excludes empty cells. It is useful for iterating through only the cells of significance, and is referenced heavily when checking
-for tripods and loops
-
-
-
-The Board class itself contains 
-	boardCells - an array of Cells.
-	boardSize - holds the data about the dimensions of the hexagon board
-	boardCount - records the number of Cells stored in boardCells
-	cellCount - counts the number of cells in the board 
-	colourWon - holds the colour that has won
  
-addCell - Add cell to array inside board and increment total
-
-printBoard - Debug method used for printing all current cells while also highlighting which ones are root cells 
-	Currently not accurate due to root validation issues
-			 
-simpleLoopCheck is still not functioning.
-	Given more time to implement, a modified depth first search would be utilized in its place.
-	As we have not implemented a 'graph' in the design of Part A, the modified dfs would be constantly 
-	referencing the board for cell neighbours and whether they've been viewed.
-	The goal of the dfs would have been to get from the root to the root, in the number of steps equal or greater
-	to the dimension of the board specified.			 
-
-Currently, isNeighbour is not a precise way of checking if cell is final cell in configuration
-Given more time to implement, a whole sweep of the current configuration
-searching for more unviewed neighbouring cells would be enacted.
-If none were found, then it would confirm a final cell.
-isNeighbour - checks to see if current cell has any neighbouring cells of same colour. If results are false, it was intended to imply a new root node
-	Not a successful way of determining new root nodes for each detached configuration of cells
-  
-checkTripod - Function to check if there are tripods in the board. This works by a recursive implementation through traversing the root nodes in a graph
-and checking the neighbours of that cell. Implementing a stack to push the nodes and their coordinates helps us to further search for edge nodes - nodes 
-that touch the sides of the board. Returns false if there is no tripod and returns true if there is a tripod.    
  
-adjacencySweep - Finds all adjacent cells to specified cell, and accurately constructs a neighbourList referencing them.
+===============================================================================
+public int getWinner()
+
+
+
+===============================================================================
+public void printBoard(PrintStream output)
+
+
+
+===============================================================================
+				TIME COMPLEXITY OF ADVERSARIAL SEARCH ALGORIHMS	
+
  
-isAdjacent - function used to determine whether the specified two cells are next to each other.
-	the function takes into account the unconventional layout of the hexagon grid
-	
-isNeighbours - function to check for the adjacent cell nodes.   
-
-generateEdgeNodes - Function to generate the edge nodes of the board. 
-
-isUnchecked - Checks if the cell belongs to exclusion list. It's a primitive function intended for use with simpleLoopCheck
-
-simpleLoopCheck - A primitive, and currently malfunctioning way to check for loops. With each iteration, intended to run from the start of 
-	board and find the next adjacent cell to current.
-	Was designed to be recursive, to handle each detached configuration of cells and their respective root nodes.
-	Prints out colour and loop if confirmed.
-	Currently having issues running correctly alongside the Board class. 
-
-==================		
-TIME COMPLEXITY OF SEARCH ALGORIHMS	
-Tripod Checking
-Requires a traversal of a list of root nodes from a LinkedList data structure. From this, it requires to traverse through all the connecting neighbouring
-nodes. As it traverses, it puts the node to a stack as history to and place them as checked. The tripod checking algorithm takes at most O(n^2) where n 
-is the number of cell nodes being traversed through. 
-
-
-
-
-
-
-
-
- boolean reachedFirstCell = false;
-        int boardWidthIncreaser = 0;
-        String tempCell;
-        
-        /**
-         * Inserts all coloured cells into Board, 
-         * The variable boardWidthIncreaser accounts for the irregular hexagon shape
-        */
-		try{
-			for(int i=0; i < (2*inp_num-1); i++){
-				for(int j=0; j < inp_num + boardWidthIncreaser; j++){
-					// Scans for the next character in the standard input 
-					tempCell = scan.next();
-					
-					// Fill Board with Cells				
-					if(tempCell.equals("B") || tempCell.equals("W")){
-						if (tempCell.equals("B"))
-							{ board.num_B++; }
-						if (tempCell.equals("W"))
-							{ board.num_W++; }
-						Cell current = new Cell(i, j, tempCell);
-						board.addCell(board.boardCount,current);
-					} 
-					board.boardCount++;
-				}
-				if (i < inp_num -1){
-					boardWidthIncreaser += 1;
-				} else {
-					boardWidthIncreaser -= 1;
-				}
-			}	
-		}
-		catch (NoSuchElementException e){
-			System.err.println("Input lacks correct dimensions.");
-			System.err.println("Caught NoSuchElementException:" + e.getMessage());	
-		}
-		scan.close();
-		
-		// This is the section where Cells and Graphs are created
-		// check to see if this is initial iteration. If it is, make graph
-		// and set current cell as root
-		String currentColour = board.boardCells.get(0).type;
-		NewGraph graph = new NewGraph();
-		
-		for(int i=0; i < board.boardCount; i++){
-			if(reachedFirstCell == false){
-				reachedFirstCell = true;
-				
-				Cell root = new Cell();
-				root.cellCopy(board.boardCells.get(i));			
-				
-				// Put cell as root in new graph
-				
-				graph.rootList.add(root);
-				// Finds adjacent cells of root cell
-				Board.adjacencySweep(board, root);
-			}
-			else if(Board.isNeighbour(currentColour,board,board.boardCells.get(i)) == true)
-			{
-				Cell current = new Cell();
-				current.cellCopy(board.boardCells.get(i));			
-				Board.adjacencySweep(board, current);
-			}
-			else if(Board.isNeighbour(currentColour,board,board.boardCells.get(i)) == false){
-				graph.size += 1;
-				reachedFirstCell = false;
-				// No more adjacent new cells, reset reachedFirstCell to false  
-				// to seek new root in next iteration
-				currentColour = board.boardCells.get(i).type;	
-				i--;
-			}
-		}

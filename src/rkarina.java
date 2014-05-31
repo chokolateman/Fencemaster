@@ -1,10 +1,11 @@
-/**
+/******************************************************************************
  * 
  * Class to represent a player agent for the FenceMaster board game session.
  * 
  * @author Rahmadhy Karina (585592) and Bradley Jackson (587163)
  * 
- */
+******************************************************************************/
+
 import aiproj.fencemaster.*;  
 
 import java.io.PrintStream;
@@ -45,24 +46,13 @@ public class rkarina implements Player, Piece {
 		int boardCount = 0;
 		Move nothing = new Move();
 		
-		// Assign this to the global variables for piece colour and board dimension 
+		// Assign global variables for player piece and board dimension 
 		dim_num = n;
 		p_piece = p;
 		
-<<<<<<< HEAD
-		// Assign characters and piece for pplayer and  type for printing purposes 
+		// Assign characters and pieces 
 		if(p_piece == 1){ opp_piece = 2; p_type = "W"; opp_type = "B"; }
 		if(p_piece == 2){ opp_piece = 1; p_type = "B"; opp_type = "W"; }
-=======
-
-		// Assign characters for each player type for printing purposes 
-		if(p_piece == 1){ p_type = "W"; opp_type = "B"; }
-		if(p_piece == 2){ p_type = "B"; opp_type = "W"; }
-
-		// Assign this to the global variables for player 
-		this.dim_num = n;
-		this.p_piece = p;
->>>>>>> 32a87a61b90a624e68eeb34a59bf59b763de0ab9
 		
 		// Make the an empty board configuration
 		try {
@@ -81,7 +71,8 @@ public class rkarina implements Player, Piece {
 		}
 		catch (NoSuchElementException e){
 			System.err.println("Input lacks correct dimensions.");
-			System.err.println("Caught NoSuchElementException:" + e.getMessage());	
+			System.err.println("Caught NoSuchElementException:" 
+			+ e.getMessage());	
 			return -1;
 		}
 		return 0;
@@ -89,9 +80,10 @@ public class rkarina implements Player, Piece {
 
 	
 	/**
-	 * Selects a desired move against another player agent in thr board game. 
+	 * Selects a desired move against another player agent in the board game. 
 	 * Based on a MiniMax Adversarial Search Algorithm, the function 
-	 * selects a move, based on the MAX value of the current board configuration.
+	 * selects a move, based on the MAX value of the current 
+	 * board configuration.
 	 * 
 	 * @return A move class object derived from the Player interface. 
 	 */
@@ -127,23 +119,17 @@ public class rkarina implements Player, Piece {
 	}
 	
 	/**
-	 * This method is called by the referee to inform your player 
-	 * about the opponent's most recent move, so that you can maintain 
-	 * your board configuration. The input parameter is an object from 
-	 * the class aiproj.fencemaster.Move, which includes the information 
-	 * about the last move made by the opponent. Based on your board configuration
-	 * if your player thinks this move is illegal you need to return -1 
-	 * otherwise this function should return 0. 
+	 * Function to inform current player about the opponent's most recent move, 
+	 * so that you can maintain your board configuration. Based on board 
+	 * configuration, if move is illegal return -1, otherwise this function 
+	 * returns 0. 
 	 * 
 	 * @param m | A move class object from Player interface of the opponent. 
 	 * 
 	 * @return An integer value. Returns 0 if opponent move is legal, otherwise
 	 * returns -1 if opponent move is illegal.
 	 */
-
 	public int opponentMove(Move m){
-		// Variables and init of values
-<<<<<<< HEAD
 		// Check if the opponent is able to swap or not
 		if (opp_piece == 2 && move_num != 1 && m.IsSwap == true){ return -1; }
 		if (opp_piece == 1 && m.IsSwap == true ){ return -1; }
@@ -155,157 +141,12 @@ public class rkarina implements Player, Piece {
     			break;
     		}
     	}
-		
+    	
+		// Once the opponents last move is a legal move, update current board 
+    	// state and add the number of moves played
 		updateBoard(board, m);
 		move_num++;
 		return 0;
-=======
-		// Function to check to see if the move is illegal, otherwise return 0
-		// If it is illegal, return -1
-		int i;
-		int colourCount = 0;
-		int swapIndex;
-		int tempColourInt; 
-		String tempColourStr;
-		boolean possibleSwap = false;
-		
-		
-
-		/*First check if move is within bounds of board rows*/
-		if(m.Row < 0 || m.Row > (2*(this.dim_num) - 2)){ //max size is 2N-2
-			return -1;
-		}
-
-		/*Check if move is within bounds of board columns. 
-		The top half of the board and bottom half each follow
-		different constraints
-
-		e.g. top half is between 0 and N + row number
-		bottom half is between N + 1 - row number and 2N-2
-		*/
-
-
-		if(m.Col < 0 || m.Col >= (this.dim_num + m.Row)){
-			return -1;
-		}
-		if(m.Col < ((m.Row)-((this.dim_num)-1)) || m.Col > (2*(this.dim_num) - 2)){
-			return -1;
-		}
-
-
-		/*Check if a Swap is used. Iterate over and make sure that the opponent
-		has only used ONE move*/
-		for(i = 0; i < board.boardCount; i++){
-			tempColourInt = colourStringToInt(board.boardCells.get(i).type);
-			if(tempColourInt == m.P){
-				colourCount ++;
-			}
-		}
-		if(colourCount == 1){
-			possibleSwap = true;
-		}
-
-		
-		/*Check if opponent is using this player's colour i.e. the wrong colour*/
-		if(m.P == this.p_piece){
-			return -1;
-		}
-
-		/*Check if piece isn't overlapping another piece on board*/
-		for(i = 0; i < board.boardCount; i++){
-			if((board.boardCells.get(i).row == m.Row) && 
-				(board.boardCells.get(i).col == m.Col)){
-
-				swapIndex = i;
-				
-				/*Detected overlap, check if they are overlapping your cell*/
-				tempColourInt = colourStringToInt(board.boardCells.get(i).type);
-				
-				//System.out.println("board type: " + tempColourInt + " move type: " + m.P);
-				if(tempColourInt != m.P && tempColourInt != 0){
-					return -1;
-				}
-				/*Detected a match, now need to see if IsSwap was invoked*/
-				else{
-					/*Check if the swap was used, if true, update location colour
-					and end*/
-					if(possibleSwap == true && m.IsSwap == true){
-						board.boardCells.get(i).row = m.Row;
-						board.boardCells.get(i).col = m.Col;
-						
-						tempColourStr = colourIntToString(m.P);
-						board.boardCells.get(i).type = tempColourStr;
-						return 0;
-					}
-
-
-				}
-
-
-			}
-		}
-		/*Move has passed checks, update opponent location*/
-		/*construct new cell, and add to board*/
-		tempColourStr = colourIntToString(m.P);
-		Cell opponentCell = new Cell(m.Row, m.Col, tempColourStr);
-		board.boardCells.add(opponentCell);
-		
-		/*
-		board.boardCells.get(i).row = m.Row;
-		board.boardCells.get(i).col = m.Col;
-		board.boardCells.get(i).type = tempColourStr;
-		*/
-		
-		return 0;
-	}
-	
-	public int colourStringToInt(String type){
-		/*converts colour defined strings (b,w,-) from the cell class
-		 * and converts them into colour defined ints from the piece class
-		White = 1, Black = 2, Empty = 0, Invalid = -1
-		 */
-		int colour;
-		type = type.toUpperCase();
-		
-		if((type).equals("B")){
-			colour = 2;
-		}
-		else if((type).equals("W")){
-			colour = 1;
-		}
-		else if((type).equals("-")){
-			colour = 0;
-		}
-		else{
-			colour = -1;
-		}
-		
-		
-		return colour;
-	}
-	
-	public String colourIntToString(int type){
-		/*converts colour defined ints from the piece class 	 
-		* and converts them into colour defined strings (B,W,-) from the cell class
-		White = 1, Black = 2, Empty = 0, Invalid = -1
-		 */
-		String colour;
-		if(type == 1){
-			colour = "W";
-		}
-		else if(type == 2){
-			colour = "B";
-		}
-		else if(type == 0){
-			colour = "-";
-		}
-		else{
-			colour = "-";
-		}
-		
-		
-		return colour;
->>>>>>> 32a87a61b90a624e68eeb34a59bf59b763de0ab9
 	}
 	     
 	/**
@@ -388,57 +229,65 @@ public class rkarina implements Player, Piece {
 		return ""; 
 	}
 	
-	/** Recursive minimax at level of depth for either maximizing or minimizing player.
+	/** 
+	 * Recursive minimax at level of depth for either maximizing or minimizing player.
      */
-	private void minimax(int depth, Seed player) {
-   
-	// Generate possible next moves in a List of int[2] of {row, col}.
+	private int[] minimax(Cell node, int depth, int player) {
+	// Assigns the piece type, whether a minimizer or maximizer
+	String player_piece;
+    
+	// Check if the current minimax call is a maximizer(p_piece) or a minimizer (opp_piece)
+    if (player == p_piece){ player_piece = p_type; } else { player_piece = opp_type; }
+	
+	// Generate possible next moves in an Array List (these are empty cells)
 	ArrayList<Cell> nextMoves = uncheckedCells;
 
-   // mySeed is maximizing; while oppSeed is minimizing
-   int bestScore = (player == p_piece) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
-   int currentScore;
-   int bestRow = -1;
-   int bestCol = -1;
+	// p_piece is maximizing; while opp_piece is minimizing
+	int bestScore = (player == p_piece)? Integer.MAX_VALUE : Integer.MIN_VALUE;
+	int currentScore;
+	int bestRow = -1;
+	int bestCol = -1;
 
-   if (nextMoves.isEmpty() || depth == 0) {
-      // Gameover or depth reached, evaluate score
-      bestScore = evaluate();
-   } else {
-      for (int[] move : nextMoves) {
-         // Try this move for the current "player"
-         cells[move[0]][move[1]].content = player;
-         if (player == mySeed) {  // mySeed (computer) is maximizing player
-            currentScore = minimax(depth - 1, oppSeed)[0];
+	if (nextMoves.isEmpty() || depth == 0) {
+		// Gameover or depth reached, evaluate score
+		bestScore = evaluate(node, board);
+	} else {
+		for (Cell move : nextMoves) {
+        // Try this move for the current "player" piece
+		move.type = player_piece;	
+        if (player == p_piece) {  // p_piece is maximizing player
+        	// Grabs the existing score and updates it 
+            currentScore = minimax(move, depth - 1, opp_piece)[0];
             if (currentScore > bestScore) {
-               bestScore = currentScore;
-               bestRow = move[0];
-               bestCol = move[1];
+                bestScore = currentScore;
+                bestRow = move.row;
+                bestCol = move.col;
             }
-         } else {  // oppSeed is minimizing player
-            currentScore = minimax(depth - 1, mySeed)[0];
+        } else {  // opp_piece is minimizing player
+        	// Grabs the existing score and updates it 
+            currentScore = minimax(move, depth - 1, p_piece)[0];
             if (currentScore < bestScore) {
                bestScore = currentScore;
-               bestRow = move[0];
-               bestCol = move[1];
+               bestRow = move.row;
+               bestCol = move.col;
             }
          }
-         // Undo move
-         cells[move[0]][move[1]].content = Seed.EMPTY;
+         // Reset move
+         move.type = "-";
       }
-   }
-   return new int[] {bestScore, bestRow, bestCol};
-}
+   	}
+   	// Returns the evaluation/weight of the cell node and it's row and column
+   	return new int[] {bestScore, bestRow, bestCol};
+	}
 	
 	/**
 	 * Evaluation function to assign weights to possible moves from the current
 	 * board configurations. 
 	 */
-	public int evaluate(){
+	private int evaluate(Cell c, Board b){
+		int weight=0;
 		
+		
+		return weight;
 	}
-
-	
-	
-	
 }
