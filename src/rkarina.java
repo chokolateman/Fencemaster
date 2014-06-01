@@ -156,6 +156,28 @@ public class rkarina implements Player, Piece {
 	 * returns -1 if opponent move is illegal.
 	 */
 	public int opponentMove(Move m){
+		/*First check if move is within bounds of board rows*/
+		if(m.Row < 0 || m.Row > dim_height){ //max size is 2N-2
+			return -1;
+		}
+		
+		/*Check if move is within bounds of board columns. 
+		The top half of the board and bottom half each follow
+		different constraints
+
+		e.g. top half is between 0 and N + row number
+		bottom half is between N + 1 - row number and 2N-2
+		*/
+
+
+		if(m.Col < 0 || m.Col >= (this.dim_num + m.Row)){
+			return -1;
+		}
+		if(m.Col < ((m.Row)-((dim_num)-1)) || m.Col > dim_height){
+			return -1;
+		}
+
+		
 		// Check if the opponent is able to swap or not
 		if (opp_piece == 2 && move_num != 1 && m.IsSwap == true){ return -1; }
 		if (opp_piece == 1 && m.IsSwap == true ){ return -1; }
