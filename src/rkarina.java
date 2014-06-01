@@ -117,7 +117,7 @@ public class rkarina implements Player, Piece {
 			uncheckedCells.remove(nextCell);
 			
 		}
-		/*otherwise, commence Minimax*/
+		/*otherwise if not first move, commence Minimax*/
 		else{
 			nextCell = uncheckedCells.get(0);
 			minimaxReturn = minimax(nextCell, 2, p_piece);
@@ -125,18 +125,15 @@ public class rkarina implements Player, Piece {
 			move.Col =  minimaxReturn[2];
 			move.P = p_piece;
 			
-			/*for(int i = 0; i<uncheckedCells.size(); i++){
-				if(uncheckedCells.get(i).row == move.Row
-					&& uncheckedCells.get(i).col == move.Col){
-					uncheckedCells.remove(i);
-				}
-			}*/
+			nextCell.row = move.Row;
+			nextCell.col = move.Col;
+			nextCell.type = p_type;
+			
+			//Removes the returned minimax position from the Array List
+			uncheckedCells.remove(nextCell);
 			
 
 		}
-		
-		
-		
 		
 		// Update player board state 
 		updateBoard(board, move);
@@ -370,7 +367,7 @@ public class rkarina implements Player, Piece {
 		closestEdgeDistance = FindDistance(c, closeCorner);
 		evaluation = meanDistance + closestEdgeDistance;
 		
-		weight = evaluate(evaluation);
+		weight = getWeight(evaluation);
 		
 		/*corner pieces are worthless
 		 *contrastingly, cells 1 space diagonal from the corner are highly valued
@@ -388,7 +385,7 @@ public class rkarina implements Player, Piece {
 	 * The smaller the evaluation is, the more ideal it is.
 	 * Therefore, return greater weight.
 	 */
-	int evaluate(double evaluation){
+	int getWeight(double evaluation){
 		int weight = 0;
 		
 		if(evaluation < 6.0){
