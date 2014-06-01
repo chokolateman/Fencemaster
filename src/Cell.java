@@ -12,6 +12,9 @@ public class Cell {
 	public int neighborCount = 0;
 	LinkedList<Cell> neighborList;
 	
+	/*This variable will be used later for minimax search*/
+	private int value;
+	
 	// Constructor to create a new cell object
 	public Cell(int x, int y, String type){
 		this.row = x;

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import aiproj.fencemaster.*;
 
 /**
  * Computer move based on simple table lookup of preferences
@@ -6,7 +7,11 @@ import java.util.ArrayList;
 public class SimpleHeuristic extends rkarina {
 
 	// Moves {row, col} in order of preferences. {0, 0} at top-left corner
-	private ArrayList<String> preferredMoves = new ArrayList<String>();
+	//why a string lol? Not an array of cells?
+	
+	//private ArrayList<String> preferredMoves = new ArrayList<String>();
+	private ArrayList<Cell> preferredMoves = new ArrayList<Cell>();
+	private int preferredMoveSize = 0;
 	
 	/** Blank Constructor */
 	public SimpleHeuristic() {
@@ -14,9 +19,27 @@ public class SimpleHeuristic extends rkarina {
 	 
 	/**
 	 * Generates the preferred moves according to the current board state. 
+	 * 
+	 * Preferred moves?: As in all possible moves? Or highest value move?
+	 * 
+	 * Current version: generates ALL possible moves to be further examined
 	*/
-	public void generatePreferredMoves(Board b){
-		preferredMoves = b.edges;
+	public void GenerateAllMoves(Board b){
+		for(int i = 0; i < board.boardCount; i++){
+			if(board.boardCells.get(i).type.equals("-")){
+				preferredMoves.add(board.boardCells.get(i));
+				preferredMoveSize ++;
+			}
+		}
+	}
+	
+	/*MaxHeuristic deals with finding the most ideal move for the player*/
+	public int MaxHeuristic(Board b){
+		for(int i = 0; i < board.boardCount; i++){
+			
+		}
+		
+		return -1;
 	}
 	   
 	/** Search for the first empty cell, according to the preferences
