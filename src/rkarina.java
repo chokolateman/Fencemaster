@@ -1,10 +1,10 @@
-/******************************************************************************
+/***************************************************************************
  * 
  * Class to represent a player agent for the FenceMaster board game session.
  * 
  * @author Rahmadhy Karina (585592) and Bradley Jackson (587163)
  * 
-******************************************************************************/
+***************************************************************************/
 
 import aiproj.fencemaster.*;  
 
@@ -18,7 +18,7 @@ public class rkarina implements Player, Piece {
 	String p_type, opp_type;
 	Cell prevMove;
 	Board board = new Board();
-	NewGraph graph = new NewGraph();
+	//NewGraph graph = new NewGraph();
 	ArrayList<Cell> uncheckedCells = new ArrayList<Cell>();
 	
 	// Flag to check if the first move 
@@ -77,7 +77,7 @@ public class rkarina implements Player, Piece {
 		}
 		// Populate neighbors of each cell once the whole board is configured
 		for(Cell c : board.boardCells){
-			board.addNeighborList(c);
+			board.addNeighborList(board, c);
 		}
 		board.generateEdgeNodes(dim_num);
 		return 0;
