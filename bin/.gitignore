@@ -1,14 +1,15 @@
+/.DS_Store
 /.classpath
 /.project
 /Board.class
 /Cell.class
 /MiniMax Algorithm
 /MiniMax Algorithm (27th May)
+/MiniMax Algorithm (27th May) 
 /NewGraph.class
+/OpponentPlayer.class
 /SimpleHeuristic.class
 /Test
 /TestWin.class
 /aiproj
-/comments.txt
 /rkarina.class
-/OpponentPlayer.class

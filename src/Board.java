@@ -39,6 +39,24 @@ public class Board {
 		this.boardCount = boardCells.size();
 	}
 	
+	/**
+	 * Function to find a cell in an array list. 
+	 * @param x | Row integer of cell position. 
+	 * @param y | Column integer of cell position.
+	 * @param list | An array list of cells. 
+	 * @return
+	 */
+	public Cell findCell(int x, int y, ArrayList<Cell> list){
+		// Assigns a new cell object which all attributes have null values  
+		Cell temp = new Cell();
+		for (Cell c : list) {
+			// Assigns the cell object to the searched cell object in the list
+			if (c.row == x && c.col == y){ temp = c; }
+		}
+		// Returns a cell object with null values if not found in the list
+		return temp;
+	}
+	
 	public static void adjacencySweep(Board board, Cell current){
 		int i = 0;
 		//while(i<board.boardCount){
@@ -56,22 +74,55 @@ public class Board {
 			
 	}
 	
-	public static void addNeighborList(Board board, Cell curr){
-		int i = 0;
-		int x = curr.row;
-		int y = curr.col;
-		String t = curr.type;
-		while(i<NEIGHBOR_MAX){
+	//public static void addNeighborList(Board board, Cell curr){
+		//int i = 0;
+		//int x = curr.row;
+		//int y = curr.col;
+		//String t = curr.type;
+		//while(i<NEIGHBOR_MAX){
 		// Only compare nodes surrounding the current cell in the board
-			Cell temp = new Cell();
-			temp.cellCopy(board.boardCells.get(i));
+		//	Cell temp = new Cell();
+			//temp.cellCopy(board.boardCells.get(i));
 			// Is it the same cell node?
-			if(!curr.equals(temp) && isSurround(curr,temp)==true){ 
-				curr.addNeighbor(temp);
-			}
+		//	if(!curr.equals(temp) && isSurround(curr,temp)==true){ 
+			//	curr.addNeighbor(temp);
+		//	}
+	//	}
+	//}
+	
+	/**
+	 * Function to add neighbor cells into the current cell's neighbor list which are 
+	 * adjacent to the current cell. 
+	 * @param board | Board object of the current board state/configuration. 
+	 * @param curr | Cell object in the board configuration. 
+	 */
+	public void addNeighborList(Cell curr){
+		ArrayList<int[]> neighborCoords = getNeighbors(curr);
+		
+		// Adds the cell into the current cells neighbor list
+		for (int[] coord: neighborCoords){	
+			curr.addNeighbor(findCell(coord[0], coord[1], this.boardCells));
 		}
 	}
-
+	
+	/**
+	 * Function to get a list of all the coordinates of the current cells coordinates. 
+	 * @param c | A cell object which is called to get it's neighbor coordinates. 
+	 * @return An array list of integer arrays which is the list of neighbor coordinates. 
+	 */
+	public ArrayList<int[]> getNeighbors(Cell c){
+		ArrayList<int[]> neighbors = new ArrayList<int[]>();
+		
+		// Add all the coordinates of the current cell's neighbors in integer arrays
+		int[] temp1 = {c.row-1,c.col-1}, temp2 = {c.row-1, c.col}, temp3 = {c.row, c.col-1}, 
+		temp4 = {c.row, c.col+1}, temp5 = {c.row+1, c.col}, temp6 = {c.row+1, c.col+1};
+		
+		// Add all the coordinates of the current cell's neighbors in a list 
+		neighbors.add(temp1); neighbors.add(temp2); neighbors.add(temp3);
+		neighbors.add(temp4); neighbors.add(temp5); neighbors.add(temp6);
+		return neighbors;
+	}
+	
 	public static boolean isAdjacent(Cell previous, Cell current){
 	       
         if(current.row == previous.row && current.col == previous.col){
@@ -150,9 +201,8 @@ public class Board {
 		if (x == 0 && y == 0 || x == 0 && y == boardSize-1 ||
 			x == boardSize-1 && y == 0 ||
 			x == boardSize-1 && y == 2*boardSize-2 ||
-			x == 2*boardSize-2 && y == 0 || 
-			x == 2*boardSize-2 && y == boardSize-1){		
-			return true;
+			x == 2*boardSize-2 && y == boardSize-1 || 
+			x == 2*boardSize-2 && y == boardSize-1){ return true; 
 		} else { return false; }
 	}
 	

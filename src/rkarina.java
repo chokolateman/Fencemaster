@@ -13,11 +13,10 @@ import java.util.*;
 
 
 public class rkarina implements Player, Piece {
-	// Fields and initialized variables 
+	// Fields, board and initialized variables 
 	int dim_num, dim_height, p_piece, opp_piece, move_num = 0;
 	String p_type, opp_type;
 	Cell prevMove;
-	
 	Board board = new Board();
 	NewGraph graph = new NewGraph();
 	ArrayList<Cell> uncheckedCells = new ArrayList<Cell>();
@@ -42,11 +41,10 @@ public class rkarina implements Player, Piece {
 	 * 
 	 */
 	public int init(int n, int p){
-		// Initialize variables and values
+		// Initialize board size, variables and values
 		int i, j, k = 0, o = 0;
 		int boardCount = 0;
-		Move nothing = new Move();
-		
+		board.boardSize = n;
 		// Assign global variables for player piece and board dimension 
 		dim_num = n;
 		dim_height = (2*n)-2;
@@ -64,7 +62,7 @@ public class rkarina implements Player, Piece {
 	        	for(j=0; j < n + k; j++){
 					Cell current = new Cell(i, j+o, "-");
 					board.addCell(boardCount,current);
-					uncheckedCells.add(boardCount, current);
+					uncheckedCells.add(current);
 					boardCount++;
 				}
 				// Manage hex positioning 
@@ -77,7 +75,10 @@ public class rkarina implements Player, Piece {
 			+ e.getMessage());	
 			return -1;
 		}
-		
+		// Populate neighbors of each cell once the whole board is configured
+		for(Cell c : board.boardCells){
+			board.addNeighborList(c);
+		}
 		board.generateEdgeNodes(dim_num);
 		return 0;
 	}
@@ -113,26 +114,22 @@ public class rkarina implements Player, Piece {
 			move.Col = nextCell.col;
 			move.P = p_piece;
 			nextCell.type = p_type;
-			//Removes the random cell input from the Array List
+			
+			// Removes the random cell input from the Array List
 			uncheckedCells.remove(nextCell);
 			
-		}
-		/*otherwise if not first move, commence Minimax*/
-		else{
+			// Otherwise if not first move, commence Minimax operations
+		} else {
 			nextCell = uncheckedCells.get(0);
-			minimaxReturn = minimax(nextCell, 2, p_piece);
+			//nextCell.cellData();
+			minimaxReturn = minimax(nextCell, 3, p_piece);
 			move.Row =  minimaxReturn[1];
 			move.Col =  minimaxReturn[2];
 			move.P = p_piece;
-			
-			nextCell.row = move.Row;
-			nextCell.col = move.Col;
-			nextCell.type = p_type;
-			
-			//Removes the returned minimax position from the Array List
+			// Finds the corresponding returned minimax cell from uncheckedCells 
+			nextCell = board.findCell(move.Row, move.Col, uncheckedCells);
+			// Removes the returned minimax position from the Array List
 			uncheckedCells.remove(nextCell);
-			
-
 		}
 		
 		// Update player board state 
@@ -261,8 +258,6 @@ public class rkarina implements Player, Piece {
 			// Manage hex positioning 
 			if (i < dim_num-1){k++;} else {k--;}
 		}
-     	// Show the PrintStream to the player 
-     	//out.flush();
 	}
 	
 	/**
@@ -277,75 +272,89 @@ public class rkarina implements Player, Piece {
 	/** 
 	 * Recursive minimax at level of depth for either maximizing or minimizing player.
      */
-	private int[] minimax(Cell node, int depth, int player) {
+	public int[] minimax(Cell node, int depth, int player) {
 		// Assigns the piece type, whether a minimizer or maximizer
 		String player_piece;
 	    
 		// Check if the current minimax call is a maximizer(p_piece) or a minimizer (opp_piece)
 	    if (player == p_piece){ player_piece = p_type; } else { player_piece = opp_type; }
-		
+	    //System.out.println(player_piece);
+	    
 		// Generate possible next moves in an Array List (these are empty cells)
 	    // if not working, try .clone()
 		ArrayList<Cell> nextMoves = uncheckedCells;
-	
+		Cell temp = new Cell();
+		
 		// p_piece is maximizing; while opp_piece is minimizing
-		int bestScore = (player == p_piece)? Integer.MAX_VALUE : Integer.MIN_VALUE;
+		int bestScore = (player == p_piece)? Integer.MIN_VALUE : Integer.MAX_VALUE;
 		int currentScore;
-		int bestRow = -1;
-		int bestCol = -1;
+		int finalRow = -1;
+		int finalCol = -1;
 	
 		if (nextMoves.isEmpty() || depth == 0) {
-			// Gameover or depth reached, evaluate score
+			// Game over or depth reached, evaluate score
 			bestScore = evaluate(node, board, player_piece);
+			//System.out.println(bestScore);
+			
 		} else {
+			
 			for (Cell move : nextMoves) {
 	        // Try this move for the current "player" piece
-			move.type = player_piece;	
-	        if (player == p_piece) {  // p_piece is maximizing player
-	        	// Grabs the existing score and updates it 
-	            currentScore = minimax(move, depth - 1, opp_piece)[0];
-	            if (currentScore > bestScore) {
-	                bestScore = currentScore;
-	                bestRow = move.row;
-	                bestCol = move.col;
-	            }
-	        } else {  // opp_piece is minimizing player
-	        	// Grabs the existing score and updates it 
-	            currentScore = minimax(move, depth - 1, p_piece)[0];
+				temp = board.findCell(move.row, move.col, board.boardCells);
+				temp.type = player_piece;
+				
+				if (player == p_piece) {  // p_piece is maximizing player
+					
+					// Grabs the existing score and updates it 
+					currentScore = minimax(temp, depth - 1, opp_piece)[0];
+					
+					if (currentScore > bestScore) {
+						bestScore = currentScore;
+						finalRow = temp.row;
+						finalCol = temp.col;
+					}
+					
+				} else {  // opp_piece is minimizing player
+	        	
+				// Grabs the existing score and updates it 
+	            currentScore = minimax(temp, depth - 1, p_piece)[0];
 	            if (currentScore < bestScore) {
 	               bestScore = currentScore;
-	               bestRow = move.row;
-	               bestCol = move.col;
+	               finalRow = temp.row;
+	               finalCol = temp.col;
 	            }
 	         }
 	         // Reset move
-	         move.type = "-";
+	         temp.type = "-";
 	      }
 	   	}
 	   	// Returns the evaluation/weight of the cell node and its row and column
-		return new int[] {bestScore, bestRow, bestCol};
+		return new int[] {bestScore, finalRow, finalCol};
 	}
 	
 	/**
-	 * Evaluation function to assign weights to possible moves from the current
-	 * board configurations. 
+	 * Evaluation function to assign weights to possible moves from current board 
+	 * configurations/states.
+	 * @param
+	 * @param
+	 * @param  
 	 */
 	private int evaluate(Cell c, Board b, String player_piece){
-		int weight=0;
-		/* Checks what player_piece currently is 
-		 * Simple evaluation V1
-		 * Ranks edge nodes higher, ranks adjacent to existing pieces higher
-		 * bridges nodes towards closes untouched edge
-		 * a chain of nodes with more pieces ranked as a higher priority to join
+		int weight = 0;
+		/* Checks what player_piece currently is. 
+		 * Simple evaluation V1. 
+		 * - Ranks edge nodes higher, ranks adjacent to existing pieces higher.
+		 * - Bridges nodes towards closest untouched edge. 
+		 * - A chain of nodes with more pieces ranked as a higher priority to join. 
 		 */
 		int x,y, currPieces;
 		double meanDistance, closestEdgeDistance, evaluation;
 		Cell closeCorner;
 		
 		meanDistance = currPieces = 0;
-		closeCorner = findClosestEdge(c);
+		closeCorner = findClosestEdge(c, board);
 		
-		/*Calculate the average distance between current cell, and all of the 
+		/* Calculate the average distance between current cell, and all of the 
 		 * other cells of the player already on the board
 		 */
 		for(int i = 0; i < b.boardCount; i++){
@@ -362,16 +371,18 @@ public class rkarina implements Player, Piece {
 				}
 			}		
 		}
-		/*Add the edge and mean distances, the smaller the piece is, the more ideal it is*/
+		
+		/* Add the edge and mean distances, the smaller the piece is
+		 * the more ideal it is. */
 		meanDistance = (double)meanDistance/currPieces;
 		closestEdgeDistance = FindDistance(c, closeCorner);
 		evaluation = meanDistance + closestEdgeDistance;
 		
 		weight = getWeight(evaluation);
 		
-		/*corner pieces are worthless
-		 *contrastingly, cells 1 space diagonal from the corner are highly valued
-		 *starting locations for tripod victories.  
+		/* Corner pieces are worthless. 
+		 * Contrastingly, cells 1 space diagonal from corners are highly valued. 
+		 * Starting locations for tripod victories.  
 		 */
 
 		/*if(isCornerPiece(c) == true){
@@ -382,84 +393,47 @@ public class rkarina implements Player, Piece {
 	}
 	
 	/**
-	 * The smaller the evaluation is, the more ideal it is.
-	 * Therefore, return greater weight.
+	 * The smaller the evaluation is, the more ideal it is, therefore return greater 
+	 * weight if player piece, less weight if opponent piece.
+	 * return 
 	 */
 	int getWeight(double evaluation){
 		int weight = 0;
-		
-		if(evaluation < 6.0){
-			weight = 1;
-		}
-		if(evaluation < 4.0){
-			weight = 2;
-		}
-		if(evaluation < 3.0){
-			weight = 3;
-		}
-		if(evaluation < 2.5){
-			weight = 4;
-		}
-		if(evaluation < 2.0){
-			weight = 5;
-		}
-		if(evaluation < 1.5){
-			weight = 6;
-		}
-		
+		if(evaluation < 6.0){ weight = 1; }
+		if(evaluation < 4.0){ weight = 2; }
+		if(evaluation < 3.0){ weight = 3; }
+		if(evaluation < 2.5){ weight = 4; }
+		if(evaluation < 2.0){ weight = 5; }
+		if(evaluation < 1.5){ weight = 6; }
 		return weight;
 	}
 	
+	/**
+	 * Function to check for the distance between two cells in the board. 
+	 * @param c | A cell object. 
+	 * @param d | A cell object.  
+	 * @return A decimal value to check the distance from one cell to another in the board. 
+	 */
 	private double FindDistance(Cell c, Cell d){
-		double distance = -1;
+		double distance = 0.0;
 		int x1,x2,y1,y2;
-		x1 = c.row;
-		y1 = c.col;
-		x2 = d.row;
-		y2 = d.col;
-		
+		// Rows and columns coordinates
+		x1 = c.row; y1 = c.col;
+		x2 = d.row; y2 = d.col;
+		// Calculates the distance using an absolute gradient formula  
 		distance = ((Math.abs(x1-x2) + Math.abs(y1-y2) + Math.abs((x1-y1)-(x2-y2)))/2);
-		
-		
 		return distance;
 	}
 	
 	/**
-	 * Used to detect if current piece is a corner
+	 * Function that find the closest edge to current piece. 
+	 * @params cell | The current cell of the board.  
+	 * return The closest edge cell of the current cell being called. 
 	 */
-	boolean isCornerPiece(Cell cell){
-		/*Blocks the 6 corner coordinates:
-		 * (0,0), (0, n-1), (n-1, 0), (n-1, 2n-2), (2n-2, n-1), (2n-2, 2n-2)
-		 */
-		if((cell.row == 0)&&(cell.col == 0)){
-			return true;
-		}
-		else if((cell.row == 0)&&(cell.col == dim_num-1)){
-			return true;
-		}
-		else if((cell.row == dim_num-1)&&(cell.col == 0)){
-			return true;
-		}
-		else if((cell.row == dim_num-1)&&(cell.col == (2*dim_num)-2)){
-			return true;
-		}
-		else if((cell.row == (2*dim_num)-2)&&(cell.col == dim_num-1)){
-			return true;
-		}
-		else if((cell.row == (2*dim_num)-2)&&(cell.col == (2*dim_num)-2)){
-			return true;
-		}
-		
-		return false;
-	}
-	
-	/**
-	 * finds closest edge to current piece
-	 * 
-	 */
-	Cell findClosestEdge(Cell cell){
+	Cell findClosestEdge(Cell cell, Board b){
+		Cell c = new Cell();
 		int i = 0;
-		//corners of the board
+		// Corners of the board
 		int corners[][] = { {0, 0} , { dim_num-1, 0}, {0, dim_num-1}, {dim_num-1, dim_height}, 
 				{dim_height, dim_num-1}, {dim_height, dim_height} };
 		
@@ -470,7 +444,7 @@ public class rkarina implements Player, Piece {
 		
 		int closestCorner = 0;
 		
-		//set initial distance
+		// Set initial distance
 		x = corners[i][0];
 		y = corners[i][1];
 		distance = ((Math.abs(x-cellrow) + Math.abs(y-cellcol) + Math.abs((x-y)-(cellrow-cellcol)))/2);
@@ -479,15 +453,21 @@ public class rkarina implements Player, Piece {
 			x = corners[i][0];
 			y = corners[i][1];
 			temp = ((Math.abs(x-cellrow) + Math.abs(y-cellcol) + Math.abs((x-y)-(cellrow-cellcol)))/2);
-			if(temp>distance){
+			// Check if the new distance is smaller than the previous and update if it is
+			if(temp<distance){
 				distance = temp;
 				closestCorner = i;
 			}
 		}
-		
-		cell.row = corners[closestCorner][0];
-		cell.col = corners[closestCorner][1];
-		
-		return cell;
+		// Return the edge node from the current board configuration
+		for (Cell tc : b.boardCells){
+			if (c.row == corners[closestCorner][0] && c.col == corners[closestCorner][0]){
+				c = tc;
+			}
+		}
+		// cell.row = corners[closestCorner][0];
+		// cell.col = corners[closestCorner][1];
+		// return cell;
+		return c;
 	}
 }
