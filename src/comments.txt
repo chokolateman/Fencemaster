@@ -2,6 +2,8 @@ COMP30024 - Artificial Intelligence
 
 Project | PartB
 
+Date Modified: 2nd June, 2014
+
 Group Members: Rahmadhy Karina (585592) & Bradley Jackson (587163)
 
 ===============================================================================
@@ -11,25 +13,51 @@ two boards, one for the current board configuration and one for possible moves
 where the slots are empty (without a player piece attached). 
 ===============================================================================
 public Move makeMove()
-The makeMove method is handled through multiple stages the  
+The makeMove method is handled through multiple stages.   
 
  
 ===============================================================================
 public int opponentMove(Move m)
- 
- 
- 
+Opponent handles the validation of opponents move. We have two validation 
+techniques. The first checks if the player has swapped a piece and is their first
+turn or the second turn of the game, returns a -1 if it is not valid. The second 
+checks whether the moves row and column values are out of bounds of the board 
+ returns a -1 if they are out of bounds of the board. We handle the current board
+ state by updating the board with a legal opponent move given.  
 ===============================================================================
 public int getWinner()
-
-
-
+We could not implement a getWinner method as we did not make a complete function 
+in Part A as mentioned. To handle a basic working method to use the Referee file
+we simply returned -1 each time there is an empty cell, otherwise it stops when
+all possible moves (empty cells) have been used up in the board configuration. 
 ===============================================================================
 public void printBoard(PrintStream output)
-
-
-
+Printboard function is handled by the same populating system for inputting the 
+values in the current board configuration. For printing the board, we simply
+reverse engineer the populating loops in the init method and 
 ===============================================================================
 				TIME COMPLEXITY OF ADVERSARIAL SEARCH ALGORIHMS	
+MiniMax 
+Our minimax algorithm is a recursive tree function where it checks for the first 
+possible empty cell to make a move to. Once it calls the cell, it checks for
+other moves (children) and checks the evaluation weights for each in turn, one 
+for a maximizer node and the other a minimizer node. The minimizer grabs the 
+lowest possible evaluation while the maximizer grabs the highest possible 
+evaluation, updating the best score and final move.
+Time Complexity: O(bm) - Sum of all the levels, where b is the branching factor.   
+Space Complexity: O(m) - Where m is all the cell nodes in the board configuration.  
+===============================================================================
+							Evaluation functions
+Our evaluation functions include giving the weight to a cell node based on it's 
+closeness to an edge node 
+===============================================================================
+	What we wanted to implement, had we the time and skills to do so. 
+
+1. 
+ 
+2.
+ 
+3. 
+
 
  

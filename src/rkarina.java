@@ -120,7 +120,8 @@ public class rkarina implements Player, Piece {
 			
 			// Otherwise if not first move, commence Minimax operations
 		} else {
-			nextCell = uncheckedCells.get(0);
+			randInt = 0 + (int)(Math.random() * (uncheckedCells.size()));
+			nextCell = uncheckedCells.get(randInt);
 			//nextCell.cellData();
 			minimaxReturn = minimax(nextCell, 3, p_piece);
 			move.Row =  minimaxReturn[1];
@@ -293,7 +294,7 @@ public class rkarina implements Player, Piece {
 	
 		if (nextMoves.isEmpty() || depth == 0) {
 			// Game over or depth reached, evaluate score
-			bestScore = evaluate(node, board, player_piece);
+			bestScore = evaluate(node,board, player_piece);
 			//System.out.println(bestScore);
 			
 		} else {
