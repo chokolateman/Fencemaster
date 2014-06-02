@@ -48,8 +48,18 @@ Time Complexity: O(bm) - Sum of all the levels, where b is the branching factor.
 Space Complexity: O(m) - Where m is all the cell nodes in the board configuration.  
 ===============================================================================
 							Evaluation functions
-Our evaluation functions include giving the weight to a cell node based on it's 
-closeness to an edge node 
+Our evaluation functions include giving the weight to a cell node based on its
+mean distance from all the present nodes of its colour on the board. 
+What was supposed to be implemented next was that it would find the three 
+closest edges to itself, and calculate its mean distance from all of them too.
+These two distance figures would then be added up and sorted into weight 
+classes - with the lower distance resulting in higher weights.
+Thus, this evaluation function would preference placing new pieces down between
+existing pieces and nearby edges.
+As discussed in http://webdocs.cs.ualberta.ca/~hayward/theses/ewalds.pdf,
+they noted that a majority of games are won through tripods, thus tripods
+were the main priority for our system.
+The distance formula was borrowed from the above link also.
 ===============================================================================
 	What we wanted to implement, had we the time and skills to do so. 
 
